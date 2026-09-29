@@ -174,7 +174,7 @@ function Trail({ env }: { env: Environment }) {
 
       {/* o mundo (bichos e Daniboy) fica no quadro de 900 de altura, ancorado embaixo */}
       <div className="pointer-events-none absolute left-0" style={{ top: extra, width: w, height: STAGE_H }}>
-      <motion.div className="pointer-events-none absolute left-0 top-0" style={{ x: worldShift, willChange: 'transform' }}>
+      <motion.div className="pointer-events-none absolute left-0 top-0" style={{ x: worldShift }}>
         {env.animals.map((a) => (
           <TrailAnimal
             key={a.id}

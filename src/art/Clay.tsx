@@ -1,3 +1,4 @@
+import { LITE } from '../lite';
 import type { ClayColor } from './palette';
 
 /** Nome de cor da paleta, ou uma cor escrita direto (#hex, rgb(...), url(...)). */
@@ -15,7 +16,7 @@ export function C({ d, c, t, o, grain = true }: { d: string; c: Color; t?: strin
   return (
     <g transform={t} opacity={o}>
       <path d={d} fill={clay(c)} />
-      {grain && <path d={d} fill="url(#grain)" />}
+      {grain && !LITE && <path d={d} fill="url(#grain)" />}
     </g>
   );
 }
@@ -26,7 +27,7 @@ export function S({ d, c, w, t }: { d: string; c: Color; w: number; t?: string }
   return (
     <g transform={t}>
       <path {...common} stroke={clay(c)} />
-      <path {...common} stroke="url(#grain)" />
+      {!LITE && <path {...common} stroke="url(#grain)" />}
     </g>
   );
 }

@@ -29,7 +29,7 @@ const LayerArt = memo(function LayerArt({ env, index, width, stopsKey }: { env: 
   );
 });
 
-function Strip({ env, index, worldX, width, stopsKey, live }: { env: Environment; index: number; worldX: MotionValue<number>; width: number; stopsKey: string; live: boolean }) {
+function Strip({ env, index, worldX, width, stopsKey }: { env: Environment; index: number; worldX: MotionValue<number>; width: number; stopsKey: string }) {
   const { src, depth } = env.layers[index];
   const x = useTransform(worldX, (v) => -v * depth);
   const { extra, w } = useStage();
@@ -38,8 +38,8 @@ function Strip({ env, index, worldX, width, stopsKey, live }: { env: Environment
   useEffect(() => worldX.on('change', (v) => cull.setPos(v * depth)), [cull, worldX, depth]);
   // o desenho tem 900 de altura e fica ancorado embaixo; em telas mais altas sobra céu por cima
   return (
-    // Na trilha a faixa anda todo quadro: `willChange` a mantém numa camada própria, que só desliza (sem redesenhar).
-    <motion.div className="pointer-events-none absolute left-0" style={{ x, top: extra, width, height: STAGE_H, willChange: live ? 'transform' : undefined }}>
+    // Sem `willChange`: uma camada própria de 10 000+ de largura provavelmente derrubou o Safari do iPhone.
+    <motion.div className="pointer-events-none absolute left-0" style={{ x, top: extra, width, height: STAGE_H }}>
       {assetOk(src) ? (
         <div className="h-full w-full" style={{ backgroundImage: `url(${src})`, backgroundRepeat: 'repeat-x', backgroundSize: 'auto 100%' }} />
       ) : (
@@ -51,7 +51,7 @@ function Strip({ env, index, worldX, width, stopsKey, live }: { env: Environment
   );
 }
 
-function Layers({ env, worldX, front, width: fixedWidth, live = true }: { env: Environment; worldX: MotionValue<number>; front: boolean; width?: number; live?: boolean }) {
+function Layers({ env, worldX, front, width: fixedWidth }: { env: Environment; worldX: MotionValue<number>; front: boolean; width?: number }) {
   useAssetsChecked(env.layers.map((l) => l.src));
   const stopsKey = useMemo(() => stopsOf(env).join(','), [env]);
   const end = trailEnd(env);
@@ -66,7 +66,6 @@ function Layers({ env, worldX, front, width: fixedWidth, live = true }: { env: E
             worldX={worldX}
             width={fixedWidth ?? stripWidth(layer.depth, end)}
             stopsKey={stopsKey}
-            live={live}
           />
         ),
       )}
@@ -99,8 +98,8 @@ export function ScenePreview({ env, height, width }: { env: Environment; height?
     : { left: (width - DESIGN_W * k) / 2, top: 0, width: DESIGN_W, height: STAGE_H, transform: `scale(${k})` };
   const layers = (
     <div className="absolute" style={{ ...box, transformOrigin: '0 0' }}>
-      <Layers env={env} worldX={worldX} front={false} width={MAX_W} live={false} />
-      <Layers env={env} worldX={worldX} front width={MAX_W} live={false} />
+      <Layers env={env} worldX={worldX} front={false} width={MAX_W} />
+      <Layers env={env} worldX={worldX} front width={MAX_W} />
     </div>
   );
   return (
