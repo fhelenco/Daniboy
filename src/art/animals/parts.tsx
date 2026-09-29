@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
+import { LITE } from '../../lite';
 import { Shadow } from '../Clay';
 
 // Peças comuns dos bichinhos. Todos usam viewBox 300×300, com o chão em y≈286,
 // e olham para a esquerda (onde o Daniboy chega).
 
 export const Svg = ({ children }: { children: ReactNode }) => (
-  <svg viewBox="0 0 300 300" className="h-full w-full" overflow="visible" style={{ filter: 'url(#fuzz)' }} aria-hidden>
+  <svg viewBox="0 0 300 300" className="h-full w-full" overflow="visible" style={{ filter: LITE ? undefined : 'url(#fuzz)' }} aria-hidden>
     {children}
   </svg>
 );

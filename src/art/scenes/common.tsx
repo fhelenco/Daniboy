@@ -1,4 +1,5 @@
 import { band } from '../Clay';
+import { LITE } from '../../lite';
 import { PALETTE, type ClayColor } from '../palette';
 
 export const H = 900;
@@ -47,7 +48,7 @@ export function Band({ d, c, grain = true, o }: { d: string; c: ClayColor; grain
   return (
     <g opacity={o}>
       <path d={d} fill={band(c)} />
-      {grain && <path d={d} fill="url(#grain)" />}
+      {grain && !LITE && <path d={d} fill="url(#grain)" />}
     </g>
   );
 }
