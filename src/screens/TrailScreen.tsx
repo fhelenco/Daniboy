@@ -53,11 +53,11 @@ export function TrailScreen() {
 
 function Trail({ env }: { env: Environment }) {
   const { state: gameState, dispatch: game } = useGame();
-  const { w, extra, scale } = useStage();
+  const { w, extra, scale, safe } = useStage();
   const card = useCardGeometry();
   // Centro do botão do álbum (destino da figurinha): canto de cima, à direita da casinha.
   const btn = Math.max(96, 80 / scale);
-  const ALBUM_CENTER = { x: 32 + btn + 24 + btn / 2, y: 32 + btn / 2 };
+  const ALBUM_CENTER = { x: 32 + safe.l + btn + 24 + btn / 2, y: 32 + safe.t + btn / 2 };
   const [s, dispatch] = useReducer(trailReducer, initialTrail);
   const worldX = useMotionValue(0);
   const worldShift = useTransform(worldX, (v) => DANI_X - v);
@@ -174,7 +174,7 @@ function Trail({ env }: { env: Environment }) {
 
       {/* o mundo (bichos e Daniboy) fica no quadro de 900 de altura, ancorado embaixo */}
       <div className="pointer-events-none absolute left-0" style={{ top: extra, width: w, height: STAGE_H }}>
-      <motion.div className="pointer-events-none absolute left-0 top-0" style={{ x: worldShift }}>
+      <motion.div className="pointer-events-none absolute left-0 top-0" style={{ x: worldShift, willChange: 'transform' }}>
         {env.animals.map((a) => (
           <TrailAnimal
             key={a.id}
@@ -211,7 +211,7 @@ function Trail({ env }: { env: Environment }) {
         <TapBurst key={b.id} {...b} kind={env.tapEffect ?? 'leaves'} />
       ))}
 
-      <div className="absolute left-8 top-8 flex gap-6" onPointerDown={(e) => e.stopPropagation()}>
+      <div className="absolute flex gap-6" style={{ left: 32 + safe.l, top: 32 + safe.t }} onPointerDown={(e) => e.stopPropagation()}>
         <BigButton label="Escolher lugar" color="#f7952a" rim="#ffd66b" size={96} onClick={() => game({ type: 'GO', screen: 'places' })}>
           <HomeIcon size={60} />
         </BigButton>
@@ -233,7 +233,7 @@ function Trail({ env }: { env: Environment }) {
         // placa da festa, fincada no chão: estrela em cima, casinha (outro lugar) e álbum
         <motion.div
           className="absolute"
-          style={{ right: 90, bottom: 44 }}
+          style={{ right: 90 + safe.r, bottom: 44 + safe.b }}
           initial={{ y: 420, rotate: 4 }}
           animate={{ y: 0, rotate: -1.5 }}
           transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.2 }}

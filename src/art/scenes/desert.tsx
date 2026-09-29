@@ -1,7 +1,6 @@
 import { band } from '../Clay';
 import { ridgeFn, spread } from '../geom';
-import { Cloud, Flower, Grass, Pebble, Signpost, Sun } from '../props';
-import { Agave, Barrel, Boulder, Mesa, Oasis, Saguaro, Spire } from '../desertProps';
+import { Agave, Barrel, Boulder, Cloud, Flower, Grass, Mesa, Oasis, Pebble, Saguaro, Signpost, Spire, Sun } from '../culled';
 import { Band, DANI_X, H, SkyFill, atStop, type LayerProps } from './common';
 
 // Deserto (referência: céu pêssego ao pôr do sol, mesas e torres de pedra, dunas,

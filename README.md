@@ -49,4 +49,18 @@ aparecem como silhueta cinza com "?". Os bichos têm olhos grandes e brilhantes 
 ## Telas
 
 O jogo ocupa a tela inteira em qualquer proporção: em telas largas mostra mais cenário para os lados,
-em telas mais quadradas mostra mais céu, e no celular em pé pede para girar o aparelho.
+em telas mais quadradas mostra mais céu, e no celular em pé pede para girar o aparelho. O cenário vai
+até as bordas (inclusive por baixo do notch); só os botões respeitam a área segura (`safe` em
+`src/components/Stage.tsx`).
+
+## No celular
+
+Para abrir como app, sem a barra do navegador: no Safari, Compartilhar → "Adicionar à Tela de Início"
+(`public/manifest.webmanifest`, ícones em `public/icons/`). O jogo em si ainda não funciona sem internet.
+
+## Desempenho
+
+As faixas do cenário têm mais de 10 000 unidades de largura, mas só ~2 000 aparecem por vez: cada objeto
+só existe no DOM quando está perto da tela (`src/art/cull.tsx`; as cenas importam de `src/art/culled.tsx`).
+As faixas ficam em camadas próprias (`willChange`), então só deslizam. O Daniboy carrega em 768×1152 e o
+resto só na tela de carregando.

@@ -1,7 +1,6 @@
 import { band } from '../Clay';
 import { ridgeFn, spread } from '../geom';
-import { Cloud, Flower, Grass, Pebble, Pine, Plant, PuffTree, Rock, Signpost, Sun } from '../props';
-import { Clover, Fern, LogBridge, RockSpires, TwistedTree, Waterfall, WoodFence } from '../forestProps';
+import { Clover, Cloud, Fern, Flower, Grass, LogBridge, Pebble, Pine, Plant, PuffTree, Rock, RockSpires, Signpost, Sun, TwistedTree, Waterfall, WoodFence } from '../culled';
 import { ANIMAL_SCREEN_X, Band, DANI_X, H, SkyFill, atStop, type LayerProps } from './common';
 
 // Floresta (referência: tronco retorcido e folhas redondas emoldurando, samambaias,

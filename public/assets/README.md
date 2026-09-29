@@ -6,7 +6,7 @@ ele substituir o desenho placeholder. Se um arquivo não existir, o jogo segue n
 - imagem faltando: aparece o desenho em massinha (SVG)
 - mp3 faltando: a voz do aparelho lê o texto em português
 
-## daniboy/ (fundo transparente, 1024×1536)
+## daniboy/ (fundo transparente, proporção 2:3; o jogo usa 768×1152, que é leve no celular e nítido)
 - acenando.webp: de frente, acenando (início, escolher lugar, quando ri)
 - andando.webp: de lado, parado no meio do passo (quando ele para)
 - andando-1.webp … andando-13.webp: os 13 quadros de UM passo, na ordem do ciclo definido em

@@ -1,4 +1,4 @@
-// Imagens do Daniboy (fundo transparente, 1024×1536). Ficam em public/assets/daniboy/.
+// Imagens do Daniboy (fundo transparente, 768×1152: 2:3, leves para o celular). Ficam em public/assets/daniboy/.
 // Se um arquivo não existir, o jogo usa o desenho em SVG no lugar.
 export const daniboyImages = {
   /** De frente, acenando: início, escolher lugar e volta do fim da trilha. */
