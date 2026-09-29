@@ -5,17 +5,19 @@ import { trailEnd } from '../data/environments';
 import { STOP_GAP } from '../game/useWalkLoop';
 import { assetOk, useAssetsChecked } from '../assets/preload';
 import { genericLayers, sceneArt } from '../art/scenes';
-import { CullCtx, createCullStore } from '../art/cull';
+import { CullCtx, createCullStore, culled } from '../art/cull';
+import { TILE_OVERLAP, TILE_W, isBaked, tileCount, tileSrc, tileTier, type TileTier } from '../data/tiles';
 import { DESIGN_W, DesignStage, MAX_W, STAGE_H, useStage } from './Stage';
 
 // O cenário é feito de faixas longas (uma por camada), cada uma andando na sua velocidade:
 // o céu parado, o fundo devagar, o chão junto com o Daniboy e a frente mais rápido.
-// Se existir o PNG da camada, ele é usado (repetindo na horizontal); senão, o desenho em massinha.
+// Cada camada (menos o céu) é mostrada como uma fila de imagens já prontas (`src/data/tiles.ts`); se existir
+// o PNG da camada, ele é usado (repetindo na horizontal); e se faltar tudo, o desenho em massinha (SVG).
 
-const stopsOf = (env: Environment) => env.animals.map((a) => a.x - STOP_GAP).sort((a, b) => a - b);
+export const stopsOf = (env: Environment) => env.animals.map((a) => a.x - STOP_GAP).sort((a, b) => a - b);
 
 /** Largura da faixa: o quanto ela anda até o fim da trilha, mais a tela mais larga possível. */
-const stripWidth = (depth: number, end: number) => (depth === 0 ? MAX_W : Math.ceil(depth * end + MAX_W + 200));
+export const stripWidth = (depth: number, end: number) => (depth === 0 ? MAX_W : Math.ceil(depth * end + MAX_W + 200));
 
 /** Desenho de uma camada (memorizado: só redesenha se o lugar ou a largura mudarem). */
 const LayerArt = memo(function LayerArt({ env, index, width, stopsKey }: { env: Environment; index: number; width: number; stopsKey: string }) {
@@ -29,10 +31,30 @@ const LayerArt = memo(function LayerArt({ env, index, width, stopsKey }: { env: 
   );
 });
 
+/** Tamanho das imagens de cenário para esta tela (m: celular; g: computador/tablet); null = sem imagens, usa o SVG. */
+export function useTileTier(env: Environment): TileTier | null {
+  const { scale } = useStage();
+  return tileTier(env.id, scale * (typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1));
+}
+
+/** Uma peça de 1024 do cenário: só existe no DOM enquanto está perto da tela. */
+const Tile = culled(function Tile({ x, src }: { x: number; w: number; src: string }) {
+  return (
+    <img
+      src={src}
+      alt=""
+      draggable={false}
+      decoding="async"
+      style={{ position: 'absolute', left: x, top: 0, width: TILE_W + TILE_OVERLAP, height: STAGE_H, maxWidth: 'none' }}
+    />
+  );
+});
+
 function Strip({ env, index, worldX, width, stopsKey }: { env: Environment; index: number; worldX: MotionValue<number>; width: number; stopsKey: string }) {
   const { src, depth } = env.layers[index];
   const x = useTransform(worldX, (v) => -v * depth);
   const { extra, w } = useStage();
+  const tier = useTileTier(env);
   // Só os objetos perto da tela ficam no DOM: a janela acompanha o quanto a faixa já andou.
   const cull = useMemo(() => createCullStore(w, worldX.get() * depth), [w, worldX, depth]);
   useEffect(() => worldX.on('change', (v) => cull.setPos(v * depth)), [cull, worldX, depth]);
@@ -44,7 +66,13 @@ function Strip({ env, index, worldX, width, stopsKey }: { env: Environment; inde
         <div className="h-full w-full" style={{ backgroundImage: `url(${src})`, backgroundRepeat: 'repeat-x', backgroundSize: 'auto 100%' }} />
       ) : (
         <CullCtx.Provider value={cull}>
-          <LayerArt env={env} index={index} width={width} stopsKey={stopsKey} />
+          {tier && isBaked(index) ? (
+            Array.from({ length: tileCount(width) }, (_, k) => (
+              <Tile key={k} x={k * TILE_W} w={TILE_W + TILE_OVERLAP} src={tileSrc(tier, env.id, index, k)} />
+            ))
+          ) : (
+            <LayerArt env={env} index={index} width={width} stopsKey={stopsKey} />
+          )}
         </CullCtx.Provider>
       )}
     </motion.div>
