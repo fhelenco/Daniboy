@@ -1,0 +1,13 @@
+# dependências e build
+node_modules
+dist
+
+# sistema e ferramentas locais
+.DS_Store
+.claude
+*.log
+.env
+.env.*
+
+# cópias das capas usadas como referência de estilo (as capas de verdade estão em public/assets)
+referencias
