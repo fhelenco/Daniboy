@@ -14,6 +14,9 @@ import { GROUND_Y, TrailAnimal } from '../components/TrailAnimal';
 import { TapBurst, type Burst } from '../components/TapBurst';
 import { WalkButton } from '../components/WalkButton';
 import { BigButton } from '../components/BigButton';
+import { WoodSign } from '../components/wood';
+import { C } from '../art/Clay';
+import { softStar } from '../art/geom';
 import { AlbumIcon, HomeIcon } from '../components/icons';
 import { AnimalCard, useCardGeometry } from '../components/AnimalCard';
 import { StarBurst, StickerFly } from '../components/StickerFly';
@@ -209,7 +212,7 @@ function Trail({ env }: { env: Environment }) {
       ))}
 
       <div className="absolute left-8 top-8 flex gap-6" onPointerDown={(e) => e.stopPropagation()}>
-        <BigButton label="Escolher lugar" color="#f2a541" size={96} onClick={() => game({ type: 'GO', screen: 'places' })}>
+        <BigButton label="Escolher lugar" color="#f7952a" rim="#ffd66b" size={96} onClick={() => game({ type: 'GO', screen: 'places' })}>
           <HomeIcon size={60} />
         </BigButton>
         <motion.div
@@ -217,7 +220,7 @@ function Trail({ env }: { env: Environment }) {
           animate={albumPulse ? { scale: [1, 1.35, 0.9, 1.1, 1], rotate: [0, -10, 8, 0] } : {}}
           transition={{ duration: 0.7 }}
         >
-          <BigButton label="Álbum" color="#9b6ee8" size={96} onClick={() => dispatch({ type: 'ALBUM', open: true })}>
+          <BigButton label="Álbum" color="#3d9be0" rim="#bfe6ff" size={96} onClick={() => dispatch({ type: 'ALBUM', open: true })}>
             <AlbumIcon size={64} />
           </BigButton>
         </motion.div>
@@ -227,18 +230,33 @@ function Trail({ env }: { env: Environment }) {
       {finale !== 'none' && <Confetti />}
 
       {finale === 'back' ? (
-        <div className="absolute flex items-center gap-10" style={{ right: 100, bottom: 80 }} onPointerDown={(e) => e.stopPropagation()}>
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 14, delay: 0.3 }}>
-            <BigButton label="Escolher outro lugar" color="#4cbf5e" size={150} onClick={() => game({ type: 'GO', screen: 'places' })}>
-              <HomeIcon size={92} />
-            </BigButton>
-          </motion.div>
-          <motion.div initial={{ scale: 0 }} animate={{ scale: [1, 1.1, 1] }} transition={{ scale: { duration: 1.2, repeat: Infinity, delay: 0.6 } }}>
-            <BigButton label="Ver o álbum" color="#9b6ee8" size={200} onClick={() => dispatch({ type: 'ALBUM', open: true })}>
-              <AlbumIcon size={130} />
-            </BigButton>
-          </motion.div>
-        </div>
+        // placa da festa, fincada no chão: estrela em cima, casinha (outro lugar) e álbum
+        <motion.div
+          className="absolute"
+          style={{ right: 90, bottom: 44 }}
+          initial={{ y: 420, rotate: 4 }}
+          animate={{ y: 0, rotate: -1.5 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.2 }}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <WoodSign w={600} h={250} r={52} post={80} seed={12}>
+            <div className="flex items-center gap-10">
+              <BigButton label="Escolher outro lugar" color="#3fae4a" rim="#ffc247" size={150} onClick={() => game({ type: 'GO', screen: 'places' })}>
+                <HomeIcon size={92} />
+              </BigButton>
+              <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0.6 }}>
+                <BigButton label="Ver o álbum" color="#3d9be0" rim="#bfe6ff" size={190} onClick={() => dispatch({ type: 'ALBUM', open: true })}>
+                  <AlbumIcon size={120} />
+                </BigButton>
+              </motion.div>
+            </div>
+          </WoodSign>
+          <svg width={150} height={150} viewBox="0 0 150 150" className="pointer-events-none absolute overflow-visible" style={{ left: 225, top: -84 }} aria-hidden>
+            <motion.g animate={{ rotate: [-8, 8, -8], scale: [1, 1.08, 1] }} transition={{ duration: 2.4, repeat: Infinity }} style={{ originX: '75px', originY: '75px' }}>
+              <C d={softStar(75, 78, 66, 30, 5)} c="gold" />
+            </motion.g>
+          </svg>
+        </motion.div>
       ) : s.finished ? null : (
         <>
           <WalkButton dir={-1} holding={s.dir === -1} onHold={(on) => dispatch({ type: 'HOLD', dir: on ? -1 : 0, only: -1 })} />
@@ -249,7 +267,7 @@ function Trail({ env }: { env: Environment }) {
       <AnimatePresence>
         {cardAnimal && <AnimalCard key={cardAnimal.id} animal={cardAnimal} env={env} onClose={closeCard} />}
       </AnimatePresence>
-      <AnimatePresence>{s.album && <AlbumView key="album" onClose={closeAlbum} />}</AnimatePresence>
+      <AnimatePresence>{s.album && <AlbumView key="album" onClose={closeAlbum} initialEnvId={env.id} />}</AnimatePresence>
       {stickerAnimal && (
         <StickerFly key={stickerAnimal.id} animal={stickerAnimal} from={card.artCenter} to={ALBUM_CENTER} onDone={stickerArrived} />
       )}

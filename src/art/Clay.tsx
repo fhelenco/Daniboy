@@ -38,7 +38,7 @@ export function Line({ d, color = 'rgb(60 30 10 / 0.3)', w = 3, t }: { d: string
 
 /** Sombra macia no chão. */
 export const Shadow = ({ cx, cy, rx, ry, o = 1 }: { cx: number; cy: number; rx: number; ry: number; o?: number }) => (
-  <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#shadow)" opacity={o} />
+  <ellipse data-ground cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#shadow)" opacity={o} />
 );
 
 /** Brilho suave (luz batendo na massinha). */

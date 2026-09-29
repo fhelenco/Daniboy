@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import type { Environment } from '../data/types';
 import { PALETTE, type ClayColor } from '../art/palette';
 import { C } from '../art/Clay';
-import { ell, softStar } from '../art/geom';
+import { ell } from '../art/geom';
 import { Cloud, Flower, Palm, Pine, Plant, PuffTree, Rock, Sun } from '../art/props';
 import { Fern } from '../art/forestProps';
 import { Agave, Barrel, Boulder, Saguaro } from '../art/desertProps';
@@ -11,6 +11,7 @@ import { Conch, Coral, IcePlant, Shell } from '../art/beachProps';
 import { AnimalArt } from '../art/animals';
 import { DaniboyFigure } from '../components/DaniboyFigure';
 import { Frame } from '../components/Stage';
+import { WoodBar, WoodSign } from '../components/wood';
 
 // Carregando: o Daniboy anda num "planetinha" de massinha que gira embaixo dele,
 // com as coisas do lugar escolhido e os bichos que ele vai encontrar passando.
@@ -104,8 +105,6 @@ function PropSvg({ w, h, children }: { w: number; h: number; children: ReactNode
 
 export function LoadingScreen({ env, progress }: { env: Environment; progress: number }) {
   const theme = THEMES[env.id] ?? THEMES.floresta;
-  const stars = 5;
-  const lit = Math.round(progress * stars);
   // coisas do lugar e bichos alternados em volta do planetinha
   const items: { key: string; w: number; h: number; node: ReactNode }[] = [];
   const animals = env.animals;
@@ -137,32 +136,23 @@ export function LoadingScreen({ env, progress }: { env: Environment; progress: n
         </motion.g>
       </svg>
 
-      {/* nome do lugar (para os adultos) */}
+      {/* placa com o nome do lugar (para os adultos) e a barra de progresso de madeira */}
       <motion.div
-        className="absolute inset-x-0 top-10 text-center text-[110px] leading-none text-white"
-        style={{ WebkitTextStroke: '14px rgb(90 55 25 / 0.55)', paintOrder: 'stroke fill', textShadow: '0 10px 20px rgb(60 30 0 / 0.25)' }}
-        initial={{ y: -120, scale: 0.6 }}
+        className="absolute left-1/2"
+        style={{ top: 34, x: '-50%' }}
+        initial={{ y: -160, scale: 0.7 }}
         animate={{ y: 0, scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12 }}
       >
-        {env.name}
+        <WoodSign w={600} h={140} r={56} seed={8}>
+          <span className="text-[96px] leading-none text-[#fff4d6]" style={{ textShadow: '0 6px 0 rgb(80 40 10 / 0.55), 0 0 16px rgb(60 30 5 / 0.35)' }}>
+            {env.name}
+          </span>
+        </WoodSign>
       </motion.div>
 
-      {/* estrelinhas de progresso: uma para cada bicho */}
-      <div className="absolute inset-x-0 flex justify-center gap-5" style={{ top: 175 }}>
-        {Array.from({ length: stars }, (_, i) => (
-          <motion.svg
-            key={i}
-            viewBox="0 0 60 60"
-            width={62}
-            height={62}
-            animate={i < lit ? { scale: [1, 1.35, 1], rotate: [0, 20, 0] } : { scale: 1 }}
-            transition={{ duration: 0.4 }}
-            aria-hidden
-          >
-            <C d={softStar(30, 31, 28, 12, 5)} c={i < lit ? 'pollen' : '#fff'} grain={i < lit} o={i < lit ? 1 : 0.45} />
-          </motion.svg>
-        ))}
+      <div className="absolute left-1/2 -translate-x-1/2" style={{ top: 196 }}>
+        <WoodBar w={760} h={70} value={progress} />
       </div>
 
       {/* planetinha girando (o chão anda para trás, o Daniboy anda no lugar) */}

@@ -7,6 +7,7 @@ import { LINES } from '../audio/lines';
 import { DaniboyFigure, type FigurePose } from '../components/DaniboyFigure';
 import { BigButton } from '../components/BigButton';
 import { PlayIcon } from '../components/icons';
+import { WoodSign } from '../components/wood';
 import { ScenePreview } from '../components/Scene';
 import { Frame } from '../components/Stage';
 
@@ -84,16 +85,24 @@ export function StartScreen() {
         <DaniboyFigure pose={pose} className="h-full w-full" />
       </motion.button>
 
+      {/* placa de madeira fincada no chão, com o botão de jogar */}
       <motion.div
         className="absolute"
-        style={{ left: 1050, top: 440 }}
-        initial={{ scale: 0 }}
-        animate={{ scale: [1, 1.08, 1] }}
-        transition={{ scale: { duration: 1.6, repeat: Infinity, ease: 'easeInOut', delay: 0.6 } }}
+        style={{ left: 930, top: 360 }}
+        initial={{ scale: 0, y: 80, rotate: -3 }}
+        animate={{ scale: 1, y: 0, rotate: -2 }}
+        transition={{ type: 'spring', stiffness: 160, damping: 13, delay: 0.5 }}
       >
-        <BigButton label="Jogar" color="#4cbf5e" size={220} onClick={() => dispatch({ type: 'GO', screen: 'places' })}>
-          <PlayIcon size={140} />
-        </BigButton>
+        <WoodSign w={400} h={310} post={140}>
+          <motion.div
+            animate={{ scale: [1, 1.07, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+          >
+            <BigButton label="Jogar" color="#f7952a" rim="#ffd66b" size={220} onClick={() => dispatch({ type: 'GO', screen: 'places' })}>
+              <PlayIcon size={140} />
+            </BigButton>
+          </motion.div>
+        </WoodSign>
       </motion.div>
       </Frame>
     </div>

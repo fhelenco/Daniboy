@@ -25,7 +25,8 @@ Na trilha: segure o botão laranja (ou a tecla →) para andar e o azul (ou ←)
 | Animais e textos das narrações | `src/data/animals.ts` |
 | Falas fixas do jogo | `src/audio/lines.ts` |
 | Imagens do Daniboy e ciclo da caminhada | `src/data/daniboy.ts` |
-| Cenários desenhados em massinha (SVG) | `src/art/` |
+| Cenários e bichos desenhados em massinha/pelúcia (SVG) | `src/art/` |
+| Botões de biscoito, ícones e placas de madeira, molduras, livro e barra | `src/components/BigButton.tsx`, `icons.tsx`, `wood.tsx` |
 | Imagens e áudios finais | `public/assets/` (veja o `README.md` de lá) |
 
 Se uma imagem ou um mp3 não existir, o jogo usa um desenho ou a voz do aparelho no lugar, então dá
@@ -36,6 +37,14 @@ para trocar a arte aos poucos.
 As falas foram geradas com a voz "Letícia" da ElevenLabs e salvas como mp3 em `public/assets/`. O jogo
 só toca os arquivos: não chama nenhum serviço enquanto se joga. Se mudar um texto, o mp3 precisa ser
 gerado de novo.
+
+## Visual
+
+Os botões são discos de biscoito com ícone creme em relevo; placas, molduras de card, o livro do álbum
+e a barra de carregamento são de madeira com folhinhas (`src/components/wood.tsx`). As figurinhas do
+álbum são recortadas (contorno branco, classe `.diecut` em `src/styles/index.css`) e as que faltam
+aparecem como silhueta cinza com "?". Os bichos têm olhos grandes e brilhantes e borda de feltro
+(filtro `#fuzz`). O Daniboy é sempre a arte própria dele, nunca desenhada em SVG.
 
 ## Telas
 

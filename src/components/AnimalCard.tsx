@@ -5,6 +5,7 @@ import { narrate, stopNarration } from '../audio/narrator';
 import { AnimalArt } from '../art/animals';
 import { BigButton } from './BigButton';
 import { CloseIcon, SpeakerIcon } from './icons';
+import { FramedPanel, Mound, WoodSign } from './wood';
 import { useStage } from './Stage';
 
 /** Posição do card no palco (centralizado, qualquer que seja a tela) e de onde sai a figurinha. */
@@ -62,14 +63,28 @@ export function AnimalCard({ animal, env, onClose }: { animal: Animal; env: Envi
       }}
     >
       <motion.div
-        className="clay absolute rounded-[64px] border-[10px] border-white"
-        style={{ ...cardBox, background: 'linear-gradient(#fffaf0, #ffe9c6)' }}
+        className="absolute"
+        style={cardBox}
         initial={{ scale: 0.4, y: 120, rotate: -4 }}
         animate={{ scale: 1, y: 0, rotate: 0 }}
         exit={{ scale: 0.3, opacity: 0, transition: { duration: 0.25 } }}
         transition={{ type: 'spring', stiffness: 240, damping: 18 }}
         onPointerDown={(e) => e.stopPropagation()}
       >
+        {/* moldura de madeira, papel creme por dentro e folhinhas nos cantos */}
+        <FramedPanel w={cardBox.width} h={cardBox.height} frame={30} r={70} />
+
+        {/* montinho de chão do lugar, onde o bicho fica em pé */}
+        <Mound
+          w={560}
+          h={150}
+          tone={env.id === 'floresta' ? 'moss' : env.id === 'oceano' ? 'wetSand' : 'sand'}
+          tuft={env.id === 'floresta' ? 'leaf' : env.id === 'oceano' ? 'agave' : 'dryGrass'}
+          seed={env.id.length + 3}
+          className="absolute"
+          style={{ position: 'absolute', left: 50, top: 522 }}
+        />
+
         {/* vitrine do bicho: tocar nele repete a narração */}
         <button
           type="button"
@@ -104,18 +119,17 @@ export function AnimalCard({ animal, env, onClose }: { animal: Animal; env: Envi
         </button>
 
         {/* nome (para os adultos) e botão de ouvir de novo */}
-        <div className="absolute flex flex-col items-center gap-10" style={{ left: 620, top: Math.max(150, 36 + closeSize + 8), width: 420 }}>
-          <span
-            className="text-center text-[80px] leading-none"
-            style={{ color: '#6b3d1e', textShadow: '0 5px 0 rgb(255 255 255 / 0.9), 0 10px 16px rgb(90 50 20 / 0.2)' }}
-          >
-            {animal.name}
-          </span>
+        <div className="absolute flex flex-col items-center gap-12" style={{ left: 620, top: Math.max(150, 36 + closeSize + 8), width: 420 }}>
+          <WoodSign w={440} h={130} r={44} seed={7} leaves={false}>
+            <span className="text-[80px] leading-none text-[#fff4d6]" style={{ textShadow: '0 5px 0 rgb(80 40 10 / 0.55), 0 0 12px rgb(60 30 5 / 0.35)' }}>
+              {animal.name}
+            </span>
+          </WoodSign>
           <motion.div
             animate={talking ? { scale: 1 } : { scale: [1, 1.1, 1] }}
             transition={talking ? { duration: 0.2 } : { duration: 1.2, repeat: Infinity }}
           >
-            <BigButton label="Ouvir de novo" color="#4fa3e0" size={190} onClick={speak}>
+            <BigButton label="Ouvir de novo" color="#3d9be0" rim="#bfe6ff" size={190} onClick={speak}>
               <SpeakerIcon size={120} />
             </BigButton>
           </motion.div>
@@ -124,11 +138,11 @@ export function AnimalCard({ animal, env, onClose }: { animal: Animal; env: Envi
         <motion.div
           key={nudge}
           className="absolute"
-          style={{ right: 36, top: 36 }}
+          style={{ right: -16, top: -16 }}
           animate={nudge ? { rotate: [0, -14, 14, -8, 0], scale: [1, 1.18, 1] } : {}}
           transition={{ duration: 0.5 }}
         >
-          <BigButton label="Fechar" color="#f0645a" size={closeSize} onClick={onClose}>
+          <BigButton label="Fechar" color="#e8443a" rim="#ffb3a8" size={closeSize} onClick={onClose}>
             <CloseIcon size={closeSize * 0.65} />
           </BigButton>
         </motion.div>
