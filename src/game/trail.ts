@@ -40,7 +40,8 @@ export const initialTrail: TrailState = {
 export function trailReducer(s: TrailState, a: TrailAction): TrailState {
   switch (a.type) {
     case 'HOLD':
-      if (a.only !== undefined && s.dir !== a.only) return s; // soltou o botão do outro lado: ignora
+      // Soltar o botão do outro lado é ignorado. O `only` vale só para soltar: apertar sempre pega.
+      if (a.dir === 0 && a.only !== undefined && s.dir !== a.only) return s;
       if (s.dir === a.dir) return s;
       if (a.dir !== 0 && (s.card || s.album)) return s; // com card ou álbum aberto, não anda
       // Voltar para trás desfaz a parada no bicho: ao chegar de novo, ele para outra vez.
