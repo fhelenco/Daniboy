@@ -62,6 +62,11 @@ export function ClayDefs() {
             </linearGradient>
           </g>
         ))}
+        {/* pelúcia: bordas levemente "peludinhas", como feltro */}
+        <filter id="fuzz" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
         <radialGradient id="shadow">
           <stop offset="0" stopColor="rgb(60 30 10 / 0.38)" />
           <stop offset="0.6" stopColor="rgb(60 30 10 / 0.16)" />

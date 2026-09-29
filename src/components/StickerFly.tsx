@@ -19,7 +19,8 @@ export function StickerFly({ animal, from, to, onDone }: { animal: Animal; from:
       transition={{ duration: 1.2, ease: 'easeInOut', times: [0, 0.4, 1] }}
       onAnimationComplete={onDone}
     >
-      <div className="clay h-full w-full -rotate-3 rounded-[44px] border-[8px] border-white bg-[#fff6e3] p-4">
+      {/* figurinha recortada, igual à do álbum */}
+      <div className="diecut h-full w-full -rotate-3" style={{ ['--o' as string]: '9px' }}>
         <AnimalArt animal={animal} />
       </div>
     </motion.div>

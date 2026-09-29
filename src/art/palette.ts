@@ -21,6 +21,14 @@ export const PALETTE = {
 
   cloudWarm: ['#fff6ea', '#fbdcc6', '#e0ae93'],
 
+  // interface (placas de madeira, papel, botões de biscoito)
+  plank: ['#e6b676', '#bd8140', '#8a5626'],
+  frame: ['#c98444', '#94592a', '#623a1a'],
+  cream: ['#fffbf0', '#fdeecb', '#ead3a0'],
+  paper: ['#fff8e6', '#f8e6bd', '#e2c98f'],
+  gold: ['#ffe58a', '#f7bd43', '#c98a14'],
+  leafBright: ['#b4e878', '#58b34c', '#2f7d36'],
+
   // floresta (referência: folhas redondas verde-limão, samambaias, picos de pedra ao fundo)
   lime: ['#e6f294', '#b5d155', '#789830'],
   fern: ['#a8d880', '#57a14a', '#2f6c30'],

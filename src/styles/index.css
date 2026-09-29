@@ -51,3 +51,22 @@ body {
     inset 8px 10px 18px rgb(255 255 255 / 0.45),
     0 14px 28px rgb(70 40 10 / 0.25);
 }
+
+/* Figurinha recortada: contorno grosso em volta do desenho (como adesivo) e sombra macia. Some a sombra do chão. */
+.diecut {
+  --o: 5px;
+  --edge: #fff;
+  filter: drop-shadow(var(--o) 0 0 var(--edge)) drop-shadow(calc(var(--o) * -1) 0 0 var(--edge))
+    drop-shadow(0 var(--o) 0 var(--edge)) drop-shadow(0 calc(var(--o) * -1) 0 var(--edge))
+    drop-shadow(0 5px 7px rgb(70 40 10 / 0.35));
+}
+.diecut [data-ground] {
+  display: none;
+}
+/* Silhueta cinza de figurinha que ainda não foi encontrada */
+.silhouette {
+  --edge: #f4efe6;
+}
+.silhouette > * {
+  filter: brightness(0) invert(0.8);
+}
