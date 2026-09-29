@@ -31,7 +31,7 @@ export function PlaceSelectScreen() {
   const [chosen, setChosen] = useState<string | null>(null);
   const [albumOpen, setAlbumOpen] = useState(false);
   const n = environments.length;
-  const { scale } = useStage();
+  const { scale, safe } = useStage();
   // Em celulares os botões do topo ficam maiores (alvo de toque): os cards descem e encolhem um pouco.
   const btn = Math.max(96, 80 / scale);
   const CARD_TOP = Math.max(170, 32 + btn + 12);
@@ -53,7 +53,7 @@ export function PlaceSelectScreen() {
     <div className="absolute inset-0">
       <PlacesBackdrop cards={spots} />
 
-      <div className="absolute left-8 top-8 z-10 flex gap-6">
+      <div className="absolute z-10 flex gap-6" style={{ left: 32 + safe.l, top: 32 + safe.t }}>
         <BigButton label="Início" color="#f7952a" rim="#ffd66b" size={96} onClick={() => dispatch({ type: 'GO', screen: 'start' })}>
           <HomeIcon size={60} />
         </BigButton>

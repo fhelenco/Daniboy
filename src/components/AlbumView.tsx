@@ -96,7 +96,7 @@ function Stars({ found, total }: { found: number; total: number }) {
 // Encontradas aparecem coloridas e recortadas; as outras, silhueta cinza com "?".
 export function AlbumView({ onClose, initialEnvId }: { onClose: () => void; initialEnvId?: string }) {
   const { state } = useGame();
-  const { w, h, scale } = useStage();
+  const { w, h, scale, safe } = useStage();
   // Marcadores dos lugares: alvo de toque de pelo menos 80 px reais, sem sair da tela por cima do livro.
   const tab = Math.max(124, 80 / scale);
   const bookTop = (h - BOOK_H) / 2 + 30;
@@ -205,7 +205,7 @@ export function AlbumView({ onClose, initialEnvId }: { onClose: () => void; init
         </div>
       </motion.div>
 
-      <div className="absolute flex flex-col gap-6" style={{ left: 30, top: 30 }}>
+      <div className="absolute flex flex-col gap-6" style={{ left: 30 + safe.l, top: 30 + safe.t }}>
         <BigButton label="Voltar" color="#f7952a" rim="#ffd66b" size={110} onClick={onClose}>
           <BackIcon size={70} />
         </BigButton>

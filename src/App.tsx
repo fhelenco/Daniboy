@@ -1,8 +1,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { GameProvider, useGame } from './game/GameContext';
 import { environments, findEnvironment } from './data/environments';
-import { daniboyImages, daniboyWalkCycle } from './data/daniboy';
-import { useAssetsChecked } from './assets/preload';
+import { DANIBOY_FIRST, useAssetsChecked } from './assets/preload';
 import { ClayDefs } from './art/ClayDefs';
 import { Stage } from './components/Stage';
 import { SoundToggle } from './components/SoundToggle';
@@ -10,12 +9,11 @@ import { StartScreen } from './screens/StartScreen';
 import { PlaceSelectScreen } from './screens/PlaceSelectScreen';
 import { TrailScreen } from './screens/TrailScreen';
 
-const DANIBOY_SRCS = [...new Set([...Object.values(daniboyImages), ...daniboyWalkCycle])];
-
 function Screens() {
   const { state } = useGame();
-  // Descobre se as imagens do Daniboy existem (senão, usa o desenho em SVG).
-  useAssetsChecked(DANIBOY_SRCS);
+  // Descobre se as imagens de que as primeiras telas precisam existem (senão, usa o desenho em SVG).
+  // O resto do Daniboy carrega junto com a trilha, na tela de carregando.
+  useAssetsChecked(DANIBOY_FIRST);
   const env = findEnvironment(state.environmentId) ?? environments[0];
   const bg = state.screen === 'places' ? '#e3be86' : (env.bgColor ?? '#7cc45a');
 

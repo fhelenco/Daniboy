@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { BigButton } from './BigButton';
 import { ArrowIcon } from './icons';
-import { useMinUnits } from './Stage';
+import { useMinUnits, useStage } from './Stage';
 
 /**
  * Tempo mínimo andando depois de um toque (ms). Um toque rápido no celular dura uns 100 ms, o que só
@@ -15,6 +15,7 @@ const MIN_WALK_MS = 800;
 export function WalkButton({ dir, holding, onHold }: { dir: 1 | -1; holding: boolean; onHold: (on: boolean) => void }) {
   const forward = dir === 1;
   const minUnits = useMinUnits();
+  const { safe } = useStage();
   // pelo menos 120 px reais (o de voltar, 100), mesmo em celulares pequenos
   const size = Math.max(forward ? 180 : 150, minUnits(forward ? 120 : 100));
 
@@ -60,7 +61,7 @@ export function WalkButton({ dir, holding, onHold }: { dir: 1 | -1; holding: boo
       color={forward ? '#3fae4a' : '#f7952a'}
       rim={forward ? '#ffc247' : '#ffd66b'}
       size={size}
-      style={{ position: 'absolute', ...(forward ? { right: 90 } : { left: 60 }), bottom: 80, touchAction: 'none' }}
+      style={{ position: 'absolute', ...(forward ? { right: 90 + safe.r } : { left: 60 + safe.l }), bottom: 80 + safe.b, touchAction: 'none' }}
       animate={holding ? { scale: 0.9 } : forward ? { scale: [1, 1.06, 1] } : { scale: 1 }}
       transition={holding ? { type: 'spring', stiffness: 500, damping: 18 } : { duration: 1.4, repeat: Infinity }}
       whileTap={undefined}

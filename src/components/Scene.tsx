@@ -1,10 +1,11 @@
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { motion, useMotionValue, useTransform, type MotionValue } from 'motion/react';
 import type { Environment } from '../data/types';
 import { trailEnd } from '../data/environments';
 import { STOP_GAP } from '../game/useWalkLoop';
 import { assetOk, useAssetsChecked } from '../assets/preload';
 import { genericLayers, sceneArt } from '../art/scenes';
+import { CullCtx, createCullStore } from '../art/cull';
 import { DESIGN_W, DesignStage, MAX_W, STAGE_H, useStage } from './Stage';
 
 // O cenário é feito de faixas longas (uma por camada), cada uma andando na sua velocidade:
@@ -28,23 +29,29 @@ const LayerArt = memo(function LayerArt({ env, index, width, stopsKey }: { env: 
   );
 });
 
-function Strip({ env, index, worldX, width, stopsKey }: { env: Environment; index: number; worldX: MotionValue<number>; width: number; stopsKey: string }) {
+function Strip({ env, index, worldX, width, stopsKey, live }: { env: Environment; index: number; worldX: MotionValue<number>; width: number; stopsKey: string; live: boolean }) {
   const { src, depth } = env.layers[index];
   const x = useTransform(worldX, (v) => -v * depth);
-  const { extra } = useStage();
+  const { extra, w } = useStage();
+  // Só os objetos perto da tela ficam no DOM: a janela acompanha o quanto a faixa já andou.
+  const cull = useMemo(() => createCullStore(w, worldX.get() * depth), [w, worldX, depth]);
+  useEffect(() => worldX.on('change', (v) => cull.setPos(v * depth)), [cull, worldX, depth]);
   // o desenho tem 900 de altura e fica ancorado embaixo; em telas mais altas sobra céu por cima
   return (
-    <motion.div className="pointer-events-none absolute left-0" style={{ x, top: extra, width, height: STAGE_H }}>
+    // Na trilha a faixa anda todo quadro: `willChange` a mantém numa camada própria, que só desliza (sem redesenhar).
+    <motion.div className="pointer-events-none absolute left-0" style={{ x, top: extra, width, height: STAGE_H, willChange: live ? 'transform' : undefined }}>
       {assetOk(src) ? (
         <div className="h-full w-full" style={{ backgroundImage: `url(${src})`, backgroundRepeat: 'repeat-x', backgroundSize: 'auto 100%' }} />
       ) : (
-        <LayerArt env={env} index={index} width={width} stopsKey={stopsKey} />
+        <CullCtx.Provider value={cull}>
+          <LayerArt env={env} index={index} width={width} stopsKey={stopsKey} />
+        </CullCtx.Provider>
       )}
     </motion.div>
   );
 }
 
-function Layers({ env, worldX, front, width: fixedWidth }: { env: Environment; worldX: MotionValue<number>; front: boolean; width?: number }) {
+function Layers({ env, worldX, front, width: fixedWidth, live = true }: { env: Environment; worldX: MotionValue<number>; front: boolean; width?: number; live?: boolean }) {
   useAssetsChecked(env.layers.map((l) => l.src));
   const stopsKey = useMemo(() => stopsOf(env).join(','), [env]);
   const end = trailEnd(env);
@@ -59,6 +66,7 @@ function Layers({ env, worldX, front, width: fixedWidth }: { env: Environment; w
             worldX={worldX}
             width={fixedWidth ?? stripWidth(layer.depth, end)}
             stopsKey={stopsKey}
+            live={live}
           />
         ),
       )}
@@ -91,8 +99,8 @@ export function ScenePreview({ env, height, width }: { env: Environment; height?
     : { left: (width - DESIGN_W * k) / 2, top: 0, width: DESIGN_W, height: STAGE_H, transform: `scale(${k})` };
   const layers = (
     <div className="absolute" style={{ ...box, transformOrigin: '0 0' }}>
-      <Layers env={env} worldX={worldX} front={false} width={MAX_W} />
-      <Layers env={env} worldX={worldX} front width={MAX_W} />
+      <Layers env={env} worldX={worldX} front={false} width={MAX_W} live={false} />
+      <Layers env={env} worldX={worldX} front width={MAX_W} live={false} />
     </div>
   );
   return (

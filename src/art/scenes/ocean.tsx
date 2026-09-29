@@ -1,8 +1,6 @@
 import { band, C } from '../Clay';
 import { blob, ridgeFn, spread } from '../geom';
-import { Cloud, Foam, Log, Pebble, Rock, Sun } from '../props';
-import { RockSpires } from '../forestProps';
-import { BarnacleRock, Cliff, Conch, Coral, Footprints, IcePlant, Islet, Lighthouse, RopeFence, Shell, TidePool } from '../beachProps';
+import { BarnacleRock, Cliff, Cloud, Conch, Coral, Foam, Footprints, IcePlant, Islet, Lighthouse, Log, Pebble, Rock, RockSpires, RopeFence, Shell, Sun, TidePool } from '../culled';
 import { Band, DANI_X, H, SkyFill, atStop, type LayerProps } from './common';
 
 // Praia (referência: céu azul, ilhotas de pedra com pinheiros, farol no penhasco,

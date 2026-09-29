@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { Environment } from '../data/types';
+import { daniboyBackCycle, daniboyCheerCycle, daniboyImages, daniboyWalkCycle } from '../data/daniboy';
+
+/** As duas imagens de que as primeiras telas precisam (o resto do Daniboy só carrega ao entrar na trilha). */
+export const DANIBOY_FIRST = [daniboyImages.wave, daniboyImages.walk];
+/** As imagens do Daniboy usadas na trilha e na festa (as duas poses ainda sem uso ficam de fora). */
+export const DANIBOY_ALL = [
+  ...new Set([...daniboyWalkCycle, ...daniboyBackCycle, ...daniboyCheerCycle, daniboyImages.wave, daniboyImages.walk, daniboyImages.point, daniboyImages.lean]),
+];
 
 // Guarda quais arquivos existem, para nunca mostrar imagem quebrada nem esperar mp3 que não existe.
 const status = new Map<string, boolean>();
@@ -56,6 +64,7 @@ export function usePreload(env: Environment, minMs = 2400) {
     setReady(false);
     setProgress(0);
     const images = [
+      ...DANIBOY_ALL,
       ...env.layers.map((l) => l.src),
       ...env.animals.map((a) => a.image),
     ];
