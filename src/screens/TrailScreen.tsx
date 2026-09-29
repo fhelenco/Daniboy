@@ -8,7 +8,7 @@ import { narrate } from '../audio/narrator';
 import { LINES } from '../audio/lines';
 import { initialTrail, trailReducer } from '../game/trail';
 import { useWalkLoop } from '../game/useWalkLoop';
-import { SceneBack, SceneFront } from '../components/Scene';
+import { SceneBack, SceneFront, useTileTier } from '../components/Scene';
 import { DaniboyFigure, type FigurePose } from '../components/DaniboyFigure';
 import { GROUND_Y, TrailAnimal } from '../components/TrailAnimal';
 import { TapBurst, type Burst } from '../components/TapBurst';
@@ -34,7 +34,8 @@ const KEYS_LEFT = ['ArrowLeft'];
 export function TrailScreen() {
   const { state } = useGame();
   const env = findEnvironment(state.environmentId) ?? environments[0];
-  const { progress, ready } = usePreload(env);
+  const tier = useTileTier(env);
+  const { progress, ready } = usePreload(env, tier);
 
   return (
     <AnimatePresence mode="wait">

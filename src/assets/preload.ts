@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Environment } from '../data/types';
+import { firstTiles, type TileTier } from '../data/tiles';
 import { daniboyBackCycle, daniboyCheerCycle, daniboyImages, daniboyWalkCycle } from '../data/daniboy';
 
 /** As duas imagens de que as primeiras telas precisam (o resto do Daniboy só carrega ao entrar na trilha). */
@@ -55,7 +56,7 @@ export function preloadAudio(src: string): Promise<void> {
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Pré-carrega imagens e áudios de um lugar. Mostra o loading por pelo menos `minMs`. */
-export function usePreload(env: Environment, minMs = 2400) {
+export function usePreload(env: Environment, tier: TileTier | null, minMs = 2400) {
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
 
@@ -65,6 +66,7 @@ export function usePreload(env: Environment, minMs = 2400) {
     setProgress(0);
     const images = [
       ...DANIBOY_ALL,
+      ...(tier ? firstTiles(tier, env.id, env.layers.length) : []),
       ...env.layers.map((l) => l.src),
       ...env.animals.map((a) => a.image),
     ];
@@ -76,7 +78,7 @@ export function usePreload(env: Environment, minMs = 2400) {
     return () => {
       alive = false;
     };
-  }, [env, minMs]);
+  }, [env, tier, minMs]);
 
   return { progress, ready };
 }

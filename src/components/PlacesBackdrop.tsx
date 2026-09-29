@@ -28,7 +28,7 @@ export function PlacesBackdrop({ cards }: { cards: CardSpot[] }) {
   const m = (w - DESIGN_W) / 2;
   const wide = (f: (x: number) => number) => (x: number) => f(x - m); // ridge desenhado de 0 a w, deslocado de -m
   return (
-    <svg viewBox={`${-m} ${-extra} ${w} ${h}`} className="absolute inset-0 h-full w-full" aria-hidden>
+    <svg viewBox={`${-m} ${-extra} ${w} ${h}`} className="absolute inset-0 h-full w-full" style={{ willChange: 'transform' }} aria-hidden>
       <defs>
         <linearGradient id="places-sky" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={STAGE_H}>
           <stop offset="0" stopColor="#8fcff5" />

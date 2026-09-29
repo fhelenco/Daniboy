@@ -158,7 +158,7 @@ export function LoadingScreen({ env, progress }: { env: Environment; progress: n
       {/* planetinha girando (o chão anda para trás, o Daniboy anda no lugar) */}
       <motion.div
         className="absolute"
-        style={{ left: 800 - R, top: TOP, width: R * 2, height: R * 2 }}
+        style={{ left: 800 - R, top: TOP, width: R * 2, height: R * 2, willChange: 'transform' }}
         animate={{ rotate: -360 }}
         transition={{ duration: SPIN, repeat: Infinity, ease: 'linear' }}
       >

@@ -60,13 +60,26 @@ Para abrir como app, sem a barra do navegador: no Safari, Compartilhar → "Adic
 
 ## Desempenho
 
-As faixas do cenário têm mais de 10 000 unidades de largura, mas só ~2 000 aparecem por vez: cada objeto
-só existe no DOM quando está perto da tela (`src/art/cull.tsx`; as cenas importam de `src/art/culled.tsx`).
-O Daniboy carrega em 768×1152 e o resto só na tela de carregando.
+O cenário é desenhado em massinha por código (SVG), mas o SVG de uma trilha inteira tem milhares de formas com
+textura, e o Safari (iPhone e Mac) andava a 1–10 quadros por segundo. Por isso cada camada comprida do cenário
+(menos o céu) é "assada" em imagens de 1024 de largura (`public/assets/tiles/`, `src/data/tiles.ts`): o desenho
+é o mesmo, só que o jogo passa a mover imagens em vez de redesenhar SVG. São dois tamanhos: **m** (celular,
+1,5 px por unidade) e **g** (computador/tablet, 2,2 px), escolhidos pela nitidez real da tela, então nada perde
+nitidez. Medido no WebKit (motor do Safari): 4 → 60 quadros/s parado e 2 → 54–59 andando.
 
-Modo leve para diagnóstico: abrir com `?leve` no endereço (ex.: `https://…/?leve`) desliga o grão de
-massinha e o feltro dos bichos. Se o jogo só travar sem `?leve`, o problema é a memória gasta por esses efeitos.
+**Se mudar a arte de uma cena (`src/art/scenes`) ou a posição de um bicho, gere as imagens de novo:**
 
-Atenção: não use `will-change`/`translate3d` nas faixas do cenário. Cada uma tem mais de 10 000 de largura
-e, promovida a camada própria, é a causa provável de o Safari do iPhone ter derrubado a página ao entrar
-num lugar (ela recarregava sozinha, voltando ao início).
+```bash
+npm i --no-save puppeteer-core   # só para gerar; não faz parte do projeto
+npm run dev                      # em outro terminal
+node tools/bake-tiles.mjs http://localhost:5173 floresta,deserto,oceano
+```
+
+Outras coisas que ajudam: os objetos do SVG que sobram só existem no DOM perto da tela (`src/art/cull.tsx`), o
+Daniboy carrega em 768×1152 e o resto só na tela de carregando, e o fundo de "escolher lugar" e o planetinha do
+carregando ficam em camadas próprias (`willChange`).
+
+Atenção: não use `will-change`/`translate3d` nas faixas do cenário: cada uma tem mais de 10 000 de largura e,
+promovida a camada própria, é a causa provável de o Safari do iPhone ter derrubado a página. Modo de
+diagnóstico: abrir com `?leve` desliga o grão de massinha e o feltro dos bichos.
+
